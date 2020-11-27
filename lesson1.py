@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+## PART 1/2 ##
 # f strings
 x = 10
 print('The answer is %d today' % x)
@@ -64,3 +65,27 @@ f() # only now function is executed
 # Chained Comparison
 x > 6 and x < 20
 6 < x < 20 # similar to above line
+
+## PART 2/2
+from random import *
+from statistics import mean, stdev
+data = [gauss(100, 15) for i in range(1000)]
+mean(data)
+stdev(data)
+data = [expovariate(20) for i in range(1000)]
+mean(data)
+stdev(data)
+
+from random import choice, choices, sample, shuffle
+outcomes = ['win', 'lose', 'draw', 'play again', 'double win']
+choice(outcomes)
+choices(outcomes, k=10)
+from collections import Counter
+Counter(choices(outcomes, k=10))
+Counter (choices (outcomes, k=10000))
+Counter(choices(outcomes, [5, 4, 3, 2, 1], k=10000)) # 5 times as many win and so on
+shuffle(outcomes)
+outcomes
+sample(range(1, 57), k=6)
+sample(outcomes, k=1)[0]
+sample(outcomes, k=len(outcomes))
