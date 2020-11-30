@@ -59,4 +59,28 @@ trial() # True or False
 sum(trial() for i in range(n)) / n # approx 0.79
 
 ## PART 2/2 ##
-# Bootstrapping
+# Bootstrapping to estimate the confidence interval on a sample of data
+from statistics import mean, stdev
+timings = [7.18, 8.59, 12.24, 7.39, 8.16, 8.68, 6.98, 8.31, 9.06, 7.06, 7.67, 10.02, 6.87, 9.07]
+mean(timings)
+stdev(timings)
+# standard error of the mean relies on a normal distribution
+# Resampling makes no such assumptions.
+# Here we have an exponential distribution.
+# 
+# Build a 90% confidence model
+from random import choices
+def bootstrap(data):
+    return choices(data, k=len(data))
+bootstrap(timings)
+mean(bootstrap(timings))
+n = 10000
+means = sorted(mean(bootstrap(timings)) for _ in range(n))
+means[:20]
+means[-20:]
+mean(means)
+print(f'The observed mean of {mean(timings)}')
+print(f'Falls in a 90% confidence interval from {means[500] :.1f} to {means[-500] :.1f}')
+# ^---- Big idea with little code
+# 90% of the time, the population means going to fall between 7.8 and 9.1
+# 10% of that time, there might be a sampling error where it would be outside of that range
