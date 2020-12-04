@@ -1,2 +1,4 @@
 modernpython
 .vim/
+/__pycache__/
+/pubsub/__pycache__/
