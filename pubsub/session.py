@@ -34,5 +34,5 @@ follow('raymondh', followed_user='selik')
 follow('raymondh', followed_user='barry')
 
 if __name__ == '__main__':
-    from pubsub.pubsub import posts
-    pprint(posts)
+    import pubsub
+    pprint(search('#python', limit=2))

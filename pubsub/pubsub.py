@@ -9,6 +9,8 @@
 from typing import NamedTuple, Deque, DefaultDict, Set, Optional, List
 from collections import deque, defaultdict
 from itertools import islice
+from heapq import merge
+from sys import intern # interning
 import time
 
 User = str
@@ -23,14 +25,27 @@ following: DefaultDict[User, Set[User]] = defaultdict(set)
 followers: DefaultDict[User, Set[User]] = defaultdict(set)
 
 def post_message(user: User, text: str, timestamp: Timestamp=None) -> None:
+    user = intern(user)
     timestamp = timestamp or time.time()
     post = Post(timestamp, user, text)
     posts.appendleft(post) # track posts from newest to oldest
     user_posts[user].appendleft(post)
 
 def follow(user: User, followed_user: User) -> None:
+    user, followed_user = intern(user), intern(followed_user)
     following[user].add(followed_user) # called twice, set.add() will eliminate duplicate
     followers[followed_user].add(user)
 
 def posts_by_user(user: User, limit: Optional[int] = None) -> List[Post]:
     return list(islice(user_posts[user], limit))
+
+def posts_for_user(user: User, limit: Optional[int] = None) -> List[Post]:
+    # we want to merge the resulting deque lists into one list
+    relevant = merge(*[user_posts[followed_user] 
+                       for followed_user in following[user]], reverse=True)
+    return list(islice(relevant, limit))
+
+def search(phrase: str, limit: Optional[int] = None) -> List[Post]:
+    # Pre-Indexing would increase search speed
+    # Add time sensitive caching of search queries
+    return list(islice((post for post in posts if phrase in post.text), limit))
