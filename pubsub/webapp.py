@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-## Using Bottle to Build REST APIs and Web Applications
+# Using Bottle to Build REST APIs and Web Applications
 # Bottle is a typical, modern, mico web framework (similar frameworks are Flask or Django)
 # Core Skills: routing, requests, responses, templating
 # Learn to implement content negotiation, cache controls, and cookies
 #
-# HINT: With vim slime, you have to send the whoel buffer or file to REPL. See [200~https://github.com/jpalardy/vim-slime/issues/216 how to do this
+# HINT: With vim slime, you have to send the whoel buffer or file to REPL.
+# See [200~https://github.com/jpalardy/vim-slime/issues/216 how to do this
 
 from bottle import Bottle, get, run, post, view, abort
 from bottle import response, request, template, static_file
@@ -22,6 +23,7 @@ app = Bottle()
 User = str
 logged_in_users: Dict[bytes, User] = {}
 
+
 @app.route('/')
 def welcome():
     # whenever you do content negotiation with caching, set a Vary header
@@ -35,18 +37,23 @@ def welcome():
         return '<h1> Howdy! </h1>'
     return 'Hello'
 
+
 @app.route('/now')
 def time_service():
     response.content_type = 'text/plain'
     # caching the time_service function to 1 second.
-    # This means that even if 100,000 users want to get the time, the result from the first call is used for 1 second (age), so every call afterwards gets answered by the cached result
+    # This means that even if 100,000 users want to get the time, the result
+    # from the first call is used for 1 second (age), so every call afterwards
+    # gets answered by the cached result
     response.set_header('Cache-Control', 'max-age=1')
     return time.ctime()
+
 
 @app.route('/upper/<word>')
 def upper_word(word):
     response.content_type = 'text/plain'
     return word.upper()
+
 
 @app.route('/area/circle')
 def circle_area_service():
@@ -54,7 +61,7 @@ def circle_area_service():
     print(f'Last visit: {last_visit}')
     response.set_cookie('last-visit', time.ctime(), secret=secret)
     response.set_header('Vary', 'Accept')
-    pprint(dict(request.query)) # query is like .../circle?radius=10.0
+    pprint(dict(request.query))  # query is like .../circle?radius=10.0
     # radius=abc would result in Error: 500 (Internal Server Error)
     # Users shall never see this error because it means that something went wrong in your application
     # We see the error traceback in the console
@@ -72,6 +79,7 @@ def circle_area_service():
     # also include service (REST API best practice for debugging
     return dict(radius=radius, area=area, service=request.path)
 
+
 ### File Server ###
 file_template = ''' \
 <h1> List of files in <em> Congress Data </em> directory </h1>
@@ -83,6 +91,7 @@ file_template = ''' \
 </ol>
 '''
 
+
 @app.route('/files')
 def show_files():
     response.set_header('Vary', 'Accept')
@@ -90,6 +99,7 @@ def show_files():
     if 'text/html' not in request.headers.get('Accept', '*/*'):
         return dict(files=files)
     return template(file_template, files=files)
+
 
 @app.route('/files/<filename>')
 def serve_one_file(filename):
