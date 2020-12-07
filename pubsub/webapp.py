@@ -1,11 +1,13 @@
 from typing import Dict, Optional
 import secrets
 from bottle import get, run, post, view, abort
-from bottle import response, request, static_file, template
+from bottle import response, request, static_file, template, TEMPLATE_PATH
 import pubsub
 import pubsub as comb
-import session
+import os
 
+TEMPLATE_PATH.insert(0, os.path.abspath(os.path.join('pubsub', "view")))
+print(TEMPLATE_PATH)
 secret = 'the life expectancy of a lannister stark or targaryen is short'
 
 User = str
